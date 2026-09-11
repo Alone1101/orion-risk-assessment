@@ -1,0 +1,17 @@
+[project]
+name = "orion-risk-assessment"
+version = "0.1.0"
+description = "Auditable AI-assisted authorization risk assessment pipeline"
+requires-python = ">=3.12"
+
+dependencies = [
+    "pydantic>=2.8,<3"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
