@@ -14,13 +14,16 @@ findings = [
                 page = 14,
                 excerpt = "Disaster recovery testing schedule: Not provided.",
             )
-        ],
+        ]
     )
 ]
 
+missing_information = {RiskDimension.CYBERSECURITY_DATA: ["Cybersecurity policy was not provided."]}
+
 result = assess_submission(
     submission_id = "ORION-DEMO-001",
-    findings = findings
+    findings = findings,
+    missing_information_by_dimension = missing_information
 )
 
 print(result.model_dump_json(indent = 2))

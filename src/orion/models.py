@@ -1,6 +1,5 @@
 from enum import StrEnum
 from typing import Annotated
-
 from pydantic import BaseModel, Field
 
 Probability = Annotated[float, Field(ge = 0.0, le = 1.0)]
@@ -30,6 +29,11 @@ class AuthorizationRecommendation(StrEnum):
     ENHANCED_REVIEW = "enhanced_review"
     CONDITIONAL_AUTHORIZATION = "conditional_authorization"
     ESCALATE_FOR_REJECTION_REVIEW = "escalate_for_rejection_review"
+    REQUEST_CLARIFICATION = "request_clarification"
+
+class AssessmentStatus(StrEnum):
+    ASSESSED = "assessed"
+    INSUFFICIENT_EVIDENCE = "insufficient_evidence"
 
 class EvidenceReference(BaseModel):
     document_id: str
@@ -47,8 +51,9 @@ class Finding(BaseModel):
 
 class DimensionAssessment(BaseModel):
     dimension: RiskDimension
-    score: RiskScore
-    rating: RiskRating
+    status: AssessmentStatus
+    score: RiskScore | None = None
+    rating: RiskRating | None = None
     findings: list[Finding] = Field(default_factory=list)
     missing_information: list[str] = Field(default_factory=list) # Indicate not enough information to assess something properly
 
@@ -66,7 +71,7 @@ class AuditMetadata(BaseModel):
 class ReviewerResult(BaseModel):
     submission_id: str
     assessments: list[DimensionAssessment]
-    composite_score: RiskScore
+    composite_score: RiskScore | None
     recommendation: AuthorizationRecommendation
     follow_up_questions: list[FollowUpQuestion] = Field(default_factory=list)
     audit: AuditMetadata
