@@ -1,4 +1,4 @@
-from orion.models import AuthorizationRecommendation, RiskDimension, RiskRating, Severity
+from orion.models import RiskDimension, Severity, RiskRating, AuthorizationRecommendation
 
 POLICY_VERSION = "demo-policy-v1"
 
@@ -7,14 +7,14 @@ DIMENSION_WEIGHTS: dict[RiskDimension, float] = {
     RiskDimension.FINANCIAL_RESILIENCE: 0.20,
     RiskDimension.OPERATIONAL_RESILIENCE: 0.20,
     RiskDimension.CYBERSECURITY_DATA: 0.20,
-    RiskDimension.COMPLIANCE_INTEGRITY: 0.25,
+    RiskDimension.COMPLIANCE_INTEGRITY: 0.25
 }
 
 SEVERITY_SCORES: dict[Severity, float] = {
     Severity.LOW: 15.0,
     Severity.MEDIUM: 40.0,
     Severity.HIGH: 70.0,
-    Severity.CRITICAL: 100.0,
+    Severity.CRITICAL: 100.0
 }
 
 def risk_rating(score: float) -> RiskRating:

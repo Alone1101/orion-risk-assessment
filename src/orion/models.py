@@ -50,7 +50,7 @@ class DimensionAssessment(BaseModel):
     score: RiskScore
     rating: RiskRating
     findings: list[Finding] = Field(default_factory=list)
-    missing_information: list[str] = Field(default_factory=list)
+    missing_information: list[str] = Field(default_factory=list) # Indicate not enough information to assess something properly
 
 class FollowUpQuestion(BaseModel):
     dimension: RiskDimension
