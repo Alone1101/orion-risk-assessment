@@ -5,7 +5,10 @@ description = "Auditable AI-assisted authorization risk assessment pipeline"
 requires-python = ">=3.12"
 
 dependencies = [
-    "pydantic>=2.8,<3"
+    "pydantic>=2.8,<3",
+    "pypdf>=6,<7",
+    "python-docx>=1.2,<2",
+    "openpyxl>=3.1,<4"
 ]
 
 [project.optional-dependencies]

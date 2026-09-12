@@ -75,3 +75,17 @@ class ReviewerResult(BaseModel):
     recommendation: AuthorizationRecommendation
     follow_up_questions: list[FollowUpQuestion] = Field(default_factory=list)
     audit: AuditMetadata
+
+class SourceType(StrEnum):
+    JSON = "json"
+    PDF = "pdf"
+    DOCX = "docx"
+    XLSX = "xlsx"
+
+class DocumentChunk(BaseModel):
+    document_id: str
+    document_name: str
+    source_type: SourceType
+    text: str
+    page: int | None = None
+    section: str | None = None
