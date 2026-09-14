@@ -89,3 +89,7 @@ class DocumentChunk(BaseModel):
     text: str
     page: int | None = None
     section: str | None = None
+
+class ExtractionResult(BaseModel):
+    findings: list[Finding] = Field(default_factory = list)
+    missing_information: list[str] = Field(default_factory = list)
