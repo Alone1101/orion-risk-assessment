@@ -41,7 +41,7 @@ def build_extraction_prompt(dimension: RiskDimension, chunks: list[DocumentChunk
                 {{
                     "description": "short factual finding",
                     "severity": "low | medium | high | critical",
-                    "confidence": 0.0,
+                    "confidence": 0.5,
                     "evidence": [
                         {{
                             "source_id": "S1",
@@ -58,6 +58,35 @@ def build_extraction_prompt(dimension: RiskDimension, chunks: list[DocumentChunk
         The excerpt must come directly from the corresponding source.
 
         Do not invent evidence.
+
+        Confidence represents how strongly the supplied evidence supports the finding, not the likelihood that missing information exists.
+
+        Use higher confidence when the finding is explicitly stated in the evidence.
+
+        Use lower confidence when the finding requires interpretation or inference.
+
+        Confidence measures how directly the supplied evidence supports the finding.
+
+        Choose the value based on the evidence:
+        - 0.90-1.00: explicitly and unambiguously stated
+        - 0.70-0.89: strongly supported with minor interpretation
+        - 0.50-0.69: moderately supported and requires inference
+        - below 0.50: weak or ambiguous support
+
+        Do not copy the example confidence value automatically.
+
+        A finding and missing information are not mutually exclusive.
+
+        If the evidence explicitly states that required information, documentation, testing, reports, or controls were not provided or cannot be established:
+        1. Record the evidence-backed issue as a finding when it is risk-relevant.
+        2. Also add the absent information to "missing_information".
+
+        Example:
+        Evidence: "The latest penetration test report was not provided."
+
+        This may produce:
+        - a finding that the penetration test report is unavailable; and 
+        - missing_information containing "Latest penetration test report."
 
         Evidence:{evidence_text}
         """.strip()

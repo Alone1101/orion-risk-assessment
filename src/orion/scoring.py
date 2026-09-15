@@ -46,7 +46,14 @@ def calculate_composite_score(assessments: list[DimensionAssessment]) -> float |
         2
     )
 
-def assess_submission(submission_id: str, findings: list[Finding], missing_information_by_dimension: dict[RiskDimension, list[str]] | None = None) -> ReviewerResult:
+def assess_submission(
+    submission_id: str, 
+    findings: list[Finding], 
+    missing_information_by_dimension: dict[RiskDimension, list[str]] | None = None, 
+    llm_provider: str | None = None,
+    llm_model: str | None = None
+) -> ReviewerResult:
+    
     missing_information_by_dimension = (missing_information_by_dimension or {})
 
     findings_by_dimension: dict[RiskDimension, list[Finding]] = defaultdict(list)
@@ -77,6 +84,8 @@ def assess_submission(submission_id: str, findings: list[Finding], missing_infor
         recommendation = final_recommendation,
         audit = AuditMetadata(
             pipeline_version = "0.1.0",
-            policy_version = POLICY_VERSION
+            policy_version = POLICY_VERSION,
+            llm_provider = llm_provider,
+            llm_model = llm_model
         )
     )
