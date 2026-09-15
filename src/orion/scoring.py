@@ -1,6 +1,23 @@
 from collections import defaultdict
-from orion.models import Finding, RiskDimension, DimensionAssessment, ReviewerResult, AuditMetadata, AssessmentStatus, AuthorizationRecommendation
+from orion.models import Finding, RiskDimension, DimensionAssessment, ReviewerResult, AuditMetadata, AssessmentStatus, AuthorizationRecommendation, FollowUpQuestion
 from orion.policy import SEVERITY_SCORES, risk_rating, DIMENSION_WEIGHTS, recommendation, POLICY_VERSION
+
+DEFAULT_EVIDENCE_REQUESTS = {
+    RiskDimension.GOVERNANCE_OWNERSHIP:
+        "ownership, governance, and beneficial ownership information",
+
+    RiskDimension.FINANCIAL_RESILIENCE:
+        "financial position, liquidity, and capital information",
+
+    RiskDimension.OPERATIONAL_RESILIENCE:
+        "business continuity and operational resilience evidence",
+
+    RiskDimension.CYBERSECURITY_DATA:
+        "cybersecurity and data protection evidence",
+
+    RiskDimension.COMPLIANCE_INTEGRITY:
+        "regulatory compliance and integrity information"
+}
 
 # Converts a group of findings into one score
 def score_findings(findings: list[Finding]) -> float:
@@ -77,11 +94,14 @@ def assess_submission(
     else:
         final_recommendation = recommendation(composite)
 
+    follow_up_questions = build_follow_up_questions(missing_information_by_dimension)
+
     return ReviewerResult(
         submission_id = submission_id,
         assessments = assessments,
         composite_score = composite,
         recommendation = final_recommendation,
+        follow_up_questions = follow_up_questions,
         audit = AuditMetadata(
             pipeline_version = "0.1.0",
             policy_version = POLICY_VERSION,
@@ -89,3 +109,16 @@ def assess_submission(
             llm_model = llm_model
         )
     )
+
+def build_follow_up_questions(missing_information_by_dimension: dict[RiskDimension, list[str]]) -> list[FollowUpQuestion]:
+    questions: list[FollowUpQuestion] = []
+
+    for dimension, missing_items in missing_information_by_dimension.items():
+        for item in missing_items:
+            questions.append(FollowUpQuestion(
+                dimension = dimension,
+                question = f"Please provide {item}.",
+                reason = f"Required evidence is missing for {dimension.value}."
+            ))
+
+    return questions

@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 from orion.models import Finding, RiskDimension, Severity, AssessmentStatus
-from orion.scoring import score_findings, build_dimension_assessment, assess_submission
+from orion.scoring import score_findings, build_dimension_assessment, assess_submission, build_follow_up_questions
 
 def test_score_findings_returns_confidence_weighted_mean():
     findings = [
@@ -90,3 +90,12 @@ def test_finding_rejects_invalid_confidence():
             severity = Severity.HIGH,
             confidence = 1.5
         )
+
+def test_follow_up_questions_created_from_missing_information():
+    missing = {RiskDimension.CYBERSECURITY_DATA: ["Latest penetration test report"]}
+
+    questions = build_follow_up_questions(missing)
+
+    assert len(questions) == 1
+    assert questions[0].dimension == RiskDimension.CYBERSECURITY_DATA
+    assert "Latest penetration test report" in questions[0].question
