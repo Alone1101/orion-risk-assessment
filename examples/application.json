@@ -1,0 +1,11 @@
+{
+  "submission_id": "ORION-DEMO-001",
+  "applicant_name": "Example Infrastructure Ltd",
+  "activities": ["regulated digital infrastructure services"],
+  "documents": [
+    {
+      "document_id": "doc-001",
+      "path": "../tests/fixtures/sample.pdf"
+    }
+  ]
+}

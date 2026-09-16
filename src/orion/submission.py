@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from orion.models import ApplicationSubmission, DocumentChunk, ReviewerResult
+from orion.models import ApplicationSubmission, DocumentChunk, ReviewerResult, SourceType
 from orion.ingestion import parse_document
 from orion.llm import LLMProvider
 from orion.pipeline import run_assessment
@@ -28,6 +28,22 @@ def load_submission_documents(submission: ApplicationSubmission, base_dir: Path 
 
     return chunks
 
+def build_submission_metadata_chunk(submission: ApplicationSubmission, source_name: str) -> DocumentChunk:
+    activities = ", ".join(submission.activities)
+
+    text = (
+        f"Applicant name: {submission.applicant_name}\n"
+        f"Activities: {activities}"
+    )
+
+    return DocumentChunk(
+        document_id = "primary-submission",
+        document_name = source_name,
+        source_type = SourceType.JSON,
+        section = "application_metadata",
+        text = text
+    )
+
 def run_submission(path: Path, provider: LLMProvider) -> ReviewerResult:
     submission = load_submission(path)
 
@@ -35,6 +51,13 @@ def run_submission(path: Path, provider: LLMProvider) -> ReviewerResult:
         submission = submission,
         base_dir = path.parent
     )
+
+    metadata_chunk = build_submission_metadata_chunk(
+        submission = submission,
+        source_name = path.name
+    )
+
+    chunks.insert(0, metadata_chunk)
 
     return run_assessment(
         submission_id = submission.submission_id,

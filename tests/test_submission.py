@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
-from orion.models import ApplicationSubmission
-from orion.submission import load_submission, load_submission_documents, run_submission
+from orion.models import ApplicationSubmission, SourceType
+from orion.submission import load_submission, load_submission_documents, run_submission, build_submission_metadata_chunk
 
 class FakeLLMProvider:
     provider_name = "fake"
@@ -97,3 +97,26 @@ def test_run_submission(tmp_path):
     assert result.submission_id == "ORION-TEST-003"
     assert result.audit.llm_provider == "fake"
     assert result.audit.llm_model == "fake-model"
+
+def test_build_submission_metadata_chunk():
+    submission = ApplicationSubmission(
+        submission_id = "ORION-TEST-004",
+        applicant_name = "Example Infrastructure Ltd",
+        activities = [
+            "regulated digital infrastructure services",
+            "payment processing"
+        ]
+    )
+
+    chunk = build_submission_metadata_chunk(
+        submission = submission,
+        source_name = "application.json"
+    )
+
+    assert chunk.document_id == "primary-submission"
+    assert chunk.document_name == "application.json"
+    assert chunk.source_type == SourceType.JSON
+    assert chunk.section == "application_metadata"
+    assert "Example Infrastructure Ltd" in chunk.text
+    assert "regulated digital infrastructure services" in chunk.text
+    assert "payment processing" in chunk.text
