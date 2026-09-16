@@ -89,6 +89,14 @@ orion examples/application.json
 
 The command processes the application metadata and referenced documents, runs the assessment pipeline, and prints the structured `ReviewerResult` as JSON.
 
+Optionally deliver the resulting payload to an external review API:
+
+```bash
+orion examples/application.json --review-url https://review-api.example/results
+```
+
+The endpoint is deployment-configured rather than hard-coded. HTTP delivery failures are surfaced to the caller.
+
 ### Docker
 
 Build the image:
