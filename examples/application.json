@@ -5,7 +5,7 @@
   "documents": [
     {
       "document_id": "doc-001",
-      "path": "../tests/fixtures/sample.pdf"
+      "path": "sample.pdf"
     }
   ]
 }
