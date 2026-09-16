@@ -88,6 +88,11 @@ def build_extraction_prompt(dimension: RiskDimension, chunks: list[DocumentChunk
         - a finding that the penetration test report is unavailable; and 
         - missing_information containing "Latest penetration test report."
 
+        If supplied sources contain materially contradictory or inconsistent information:
+        1. Record the inconsistency as a finding when it is risk-relevant.
+        2. Add the information requiring clarification to "missing_information".
+        3. Cite evidence supporting the contradiction.
+
         Evidence:{evidence_text}
         """.strip()
 
