@@ -93,3 +93,13 @@ class DocumentChunk(BaseModel):
 class ExtractionResult(BaseModel):
     findings: list[Finding] = Field(default_factory = list)
     missing_information: list[str] = Field(default_factory = list)
+
+class DocumentReference(BaseModel):
+    document_id: str
+    path: str
+
+class ApplicationSubmission(BaseModel):
+    submission_id: str
+    applicant_name: str
+    activities: list[str] = Field(default_factory = list)
+    documents: list[DocumentReference] = Field(default_factory = list)
